@@ -24,5 +24,17 @@ pipeline {
                 sh 'mvn clean install -DskipTests'
             }
         }
+
+        stage('Generate SBOM') {
+            steps {
+                sh 'mvn org.cyclonedx:cyclonedx-maven-plugin:makeBom'
+            }
+        }
+
+        stage('Archive SBOM') {
+            steps {
+                archiveArtifacts artifacts: 'target/bom.xml', fingerprint: true
+            }
+        }
     }
 }
